@@ -1,5 +1,6 @@
-import React from "react";
+import React, { memo } from "react";
 import "./Header.scss";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
@@ -10,14 +11,17 @@ const Header = () => {
             <h2>Products</h2>
             <p>Home / Products</p>
           </div>
-          <button className="exit">
-            <img src="../Exit.png" alt="icon" />
-            Exit
-          </button>
+          <Link to={"/"}>
+            {" "}
+            <button className="exit">
+              <img src="../Exit.png" alt="icon" />
+              Exit
+            </button>
+          </Link>
         </div>
       </div>
     </header>
   );
 };
 
-export default Header;
+export default memo(Header);

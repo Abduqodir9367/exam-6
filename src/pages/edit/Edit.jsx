@@ -1,16 +1,11 @@
-import { memo, useState } from "react";
-import "./Add.scss";
+import React, { memo, useEffect, useState } from "react";
+import "./Edit.scss";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
-const Add = () => {
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
-  const [priceSale, setPriceSale] = useState("");
-  const [brand, setBrand] = useState("");
-  const [description, setDescription] = useState("");
+const Edit = () => {
+  // const [data, setData] = useState([]);
+  const { id } = useParams();
   const [values, setValues] = useState({
     name: "",
     brand: "",
@@ -21,40 +16,37 @@ const Add = () => {
   });
 
   const navigate = useNavigate();
-  const handleSubmit = async (event) => {
+
+  useEffect(() => {
+    axios
+      .get("https://64dcf61be64a8525a0f76c4d.mockapi.io/api/v1/products/" + id)
+      .then((res) => {
+        setValues(res.data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  const handleEdit = async (event) => {
     event.preventDefault();
     try {
-      const res = await axios.post(
-        `https://64dcf61be64a8525a0f76c4d.mockapi.io/api/v1/products`,
+      const res = await axios.put(
+        "https://64dcf61be64a8525a0f76c4d.mockapi.io/api/v1/products/" + id,
         values
       );
-      console.log(res)
-      if (res.status === 201) {
-        toast.success("Товар успешно добавлен");
-        setName("");
-        setPrice("");
-        setPriceSale("");
-        setBrand("");
-        setDescription("");
-        setTimeout(() => {
-          navigate("/products");
-        }, 1100);
-      } else {
-        toast.error("Ошибка при добавлении товара");
-      }
+      console.log(res);
+      navigate("/products");
     } catch (err) {
       console.log(err);
-      toast.error("Ошибка при добавлении товара");
     }
   };
   return (
-    <div className="Add">
+    <div className="Edit">
       <div className="conatiner">
         <div className="big">
           <div className="add-content">
             <button className="head">Основные</button>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleEdit}>
               <div className="inpt">
                 <label htmlFor="name">Name</label>
                 <input
@@ -62,6 +54,7 @@ const Add = () => {
                   name="name"
                   className="form-control inpt1"
                   required
+                  value={values.name}
                   onChange={(e) =>
                     setValues({ ...values, name: e.target.value })
                   }
@@ -75,6 +68,7 @@ const Add = () => {
                     name="brand"
                     className="form-control inpt1"
                     required
+                    value={values.brand}
                     onChange={(e) =>
                       setValues({ ...values, brand: e.target.value })
                     }
@@ -88,6 +82,7 @@ const Add = () => {
                     name="code"
                     className="form-control inpt1"
                     required
+                    value={values.code}
                     onChange={(e) =>
                       setValues({ ...values, code: e.target.value })
                     }
@@ -103,6 +98,7 @@ const Add = () => {
                   as="textarea"
                   className="form-control comment"
                   required
+                  value={values.description}
                   onChange={(e) =>
                     setValues({ ...values, description: e.target.value })
                   }
@@ -117,6 +113,7 @@ const Add = () => {
                     name="price"
                     className="form-control inpt1"
                     required
+                    value={values.price}
                     onChange={(e) =>
                       setValues({ ...values, price: e.target.value })
                     }
@@ -130,6 +127,7 @@ const Add = () => {
                     name="priceSale"
                     className="form-control inpt1"
                     required
+                    value={values.priceSale}
                     onChange={(e) =>
                       setValues({ ...values, priceSale: e.target.value })
                     }
@@ -137,10 +135,7 @@ const Add = () => {
                 </div>
               </div>
               <div className="btns">
-                <button type="submit" onClick={() => handleSubmit()}>
-                  Add
-                </button>
-                <ToastContainer />
+                <button type="submit">Edit</button>
                 <Link to={-1}>
                   <button>Cancel</button>
                 </Link>
@@ -153,4 +148,4 @@ const Add = () => {
   );
 };
 
-export default memo(Add);
+export default memo(Edit);

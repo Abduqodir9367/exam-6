@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import "./Login.scss";
 import { NavLink } from "react-router-dom";
 
@@ -12,7 +12,13 @@ const Login = () => {
             <div className="cart">
               <div className="card-content">
                 <form>
-                  <input type="email" name="email" placeholder="email" className="form-control" required />
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="email"
+                    className="form-control"
+                    required
+                  />
                   <input
                     type="password"
                     name="password"
@@ -21,9 +27,8 @@ const Login = () => {
                   />
                   <p>forgot password?</p>
                   <div className="btns">
-                    <NavLink to={"/products"}>
-                      
-                      <button   className="btn1">login</button>
+                    <NavLink to={"/profile"}>
+                      <button className="btn1">login</button>
                     </NavLink>
                     <button className="btn">G continue with google</button>
                   </div>
@@ -37,4 +42,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default memo(Login);

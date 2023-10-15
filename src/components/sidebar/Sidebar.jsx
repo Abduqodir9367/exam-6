@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import "./Sidebar.scss";
 import { NavLink } from "react-router-dom";
 
@@ -10,13 +10,13 @@ const Sidebar = () => {
           <NavLink>
             <img className="logo" src="../logo.png" alt="logo" />
           </NavLink>
-          <NavLink to='products'>
+          <NavLink to="products">
             <img src="../products.png" alt="icon" className="products" />
           </NavLink>
           <NavLink to="/">
             <img src="../login.png" alt="icon" className="login" />
           </NavLink>
-          <NavLink>
+          <NavLink to={"./add"}>
             <img src="../add.png" alt="icon" className="add" />
           </NavLink>
         </div>
@@ -25,4 +25,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default memo(Sidebar);

@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import "./Products.scss";
 import axios from "axios";
-import { NavLink, useNavigate } from "react-router-dom";
-import Form from "react-bootstrap/Form";
-import InputGroup from "react-bootstrap/InputGroup";
-import Dropdown from 'react-bootstrap/Dropdown';
-
+import { Link, NavLink } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Products = () => {
   const [posts, setPosts] = useState([]);
-  // const navigate = useNavigate();
 
   const fetchPosts = async () => {
     try {
@@ -21,14 +18,18 @@ const Products = () => {
     }
   };
 
-  // All ///////////////
-
   useEffect(() => {
     fetchPosts();
   }, []);
 
+  const Filter = (event) => {
+    setPosts(
+      posts.filter((f) => f.name.toLowerCase().includes(event.target.value))
+    );
+  };
+
   const [currentPage, setCurrentPage] = useState(1);
-  const recordsPerPage = 10;
+  const recordsPerPage = 5;
   const lastIndex = currentPage * recordsPerPage;
   const firstIndex = lastIndex - recordsPerPage;
   const records = posts.slice(firstIndex, lastIndex);
@@ -70,7 +71,12 @@ const Products = () => {
             {posts.length > 0 && (
               <div className="head">
                 <h2>Все товары (5)</h2>
-                <input type="email" class="search" placeholder="search..." />
+                <input
+                  type="email"
+                  className="search"
+                  placeholder="search..."
+                  onChange={Filter}
+                />
               </div>
             )}
             <div className="line"></div>
@@ -100,24 +106,44 @@ const Products = () => {
                           className="form-check-input checkbox "
                         />
                       </th>
-                      <NavLink to={`/Details/${post.id}`}>
-                        <td> {post.name}</td>
-                      </NavLink>
+
+                      <td className="item">
+                        {" "}
+                        <Link to={`/Details/${post.id}`}> {post.name}</Link>
+                      </td>
 
                       <td>{post.code}</td>
                       <td>{post.brand}</td>
                       <td>{post.price} $</td>
                       <td>{post.priceSale}$</td>
                       <td>
-                        <button className="edit">
-                          <img src="edit.png" alt="icon" />
-                        </button>
+                        <Link to={`/edit/${post.id}`}>
+                          <button className="edit">
+                            <img src="edit.png" alt="icon" />
+                          </button>
+                        </Link>
                         <button
                           className="delete"
-                          onClick={(e) => handleDelete(post.id)}
+                          onClick={(e) =>
+                            handleDelete(
+                              post.id,
+                              toast("Product deleting", {
+                                position: "top-right",
+                                autoClose: 1200,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                                theme: "dark",
+                              })
+                            )
+                          }
                         >
+                          
                           <img src="delete.png" alt="icon" />
                         </button>
+                        <ToastContainer />
                       </td>
                     </tr>
                   </tbody>
@@ -127,35 +153,36 @@ const Products = () => {
           </div>
 
           <div className="foter">
-      <select name="15" >
-        <option value="5">5</option>
-        <option value="10">10</option>
-        <option value="15">15</option>
-      </select>
-
-          <div className="pagination">
             {posts.length > 1 && (
-              <button className="paginations" onClick={prePage}>
-                <img src="../page-left.png" alt="icon" />
-              </button>
+              <select name="15">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+              </select>
             )}
-            {numbers.map((n, i) => (
-              <button
-                className={`pagination-btn ${
-                  currentPage === n ? "active" : ""
-                }`}
-                key={i}
-                onClick={() => changeCPage(n)}
-              >
-                {n}
-              </button>
-            ))}
-            {posts.length > 1 && (
-              <button className="paginations" onClick={nextPage}>
-                <img src="../page-right.png" alt="icon" />
-              </button>
-            )}
-          </div>
+            <div className="pagination">
+              {posts.length > 1 && (
+                <button className="paginations" onClick={prePage}>
+                  <img src="../page-left.png" alt="icon" />
+                </button>
+              )}
+              {numbers.map((n, i) => (
+                <button
+                  className={`pagination-btn ${
+                    currentPage === n ? "active" : ""
+                  }`}
+                  key={i}
+                  onClick={() => changeCPage(n)}
+                >
+                  {n}
+                </button>
+              ))}
+              {posts.length > 1 && (
+                <button className="paginations" onClick={nextPage}>
+                  <img src="../page-right.png" alt="icon" />
+                </button>
+              )}
+            </div>
           </div>
 
           {posts.length < 1 && (
@@ -186,4 +213,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default memo(Products);
